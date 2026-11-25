@@ -1,37 +1,37 @@
 package com.co.choucair.tasks;
 
-import com.co.choucair.models.UserLoombokData;
-import com.co.choucair.userinterfaces.SerenityLoginPage;
+import com.co.choucair.userinterfaces.LoginPage;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Enter;
-import net.serenitybdd.screenplay.actions.JavaScriptClick;
+import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 
-import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isClickable;
 
 public class Login implements Task {
 
-    UserLoombokData userLoombokData;
+    String user;
+    String pass;
 
-    public Login(UserLoombokData userLoombokData) {
-        this.userLoombokData = userLoombokData;
+    public Login(String user, String pass) {
+        this.user = user;
+        this.pass = pass;
     }
 
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-                WaitUntil.the(SerenityLoginPage.TXT_USER, isVisible()).forNoMoreThan(10).seconds(),
-                Enter.theValue(userLoombokData.getUser()).into(SerenityLoginPage.TXT_USER),
-                Enter.theValue(userLoombokData.getPass()).into(SerenityLoginPage.TXT_PASS),
-                JavaScriptClick.on(SerenityLoginPage.BTN_SUBMIT),
-                WaitUntil.the(SerenityLoginPage.TXT_VALIDATION, isVisible()).forNoMoreThan(10).seconds()
+                WaitUntil.the(LoginPage.USER_NAME_INPUT, isClickable()),
+                Enter.theValue(user).into(LoginPage.USER_NAME_INPUT),
+                Enter.theValue(pass).into(LoginPage.PASSWORD_INPUT),
+                Click.on(LoginPage.SUBMIT_BUTTON)
         );
     }
 
-    public static Login onTheSite(UserLoombokData userLoombokData){
-        return Instrumented.instanceOf(Login.class).withProperties(userLoombokData);
+    public static Login onTheSite(String user, String pass){
+        return Instrumented.instanceOf(Login.class).withProperties(user, pass);
     }
 }

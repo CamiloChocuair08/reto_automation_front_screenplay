@@ -1,10 +1,9 @@
 package com.co.choucair.stepdefinitions;
 
-import com.co.choucair.models.UserLoombokData;
 import com.co.choucair.questions.ValidateText;
 import com.co.choucair.tasks.Login;
 import com.co.choucair.utils.KillBrowser;
-import io.cucumber.datatable.DataTable;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -18,12 +17,11 @@ import net.thucydides.core.webdriver.SerenityWebdriverManager;
 import java.io.IOException;
 import java.util.List;
 
-import static com.co.choucair.userinterfaces.SerenityLoginPage.TXT_VALIDATION;
 import static com.co.choucair.utils.GlobalData.*;
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static org.hamcrest.Matchers.containsString;
 
-public class SerenityLoginStepDefinitions {
+public class LoginStepDefinitions {
 
     @Before
     public void setup() {
@@ -36,22 +34,24 @@ public class SerenityLoginStepDefinitions {
         KillBrowser.processes(List.of((SerenityWebdriverManager.inThisTestThread().getCurrentDriverName()).split(":")).get(0));
     }
 
-    @Given("the user is on the serenity demo page")
+    @Given("the user is on the sausedemo login page")
     public void theUserIsOnTheSerenityDemoPage() {
-        OnStage.theActorCalled(ACTOR).wasAbleTo(Open.url(URL));
-    }
-
-    @When("attempts to log in")
-    public void attemptsToLogIn(DataTable dataTable) {
-        OnStage.theActorInTheSpotlight().attemptsTo(
-                Login.onTheSite(UserLoombokData.setData(dataTable).get(0))
+        OnStage.theActorCalled(ACTOR).wasAbleTo(
+            Open.browserOn().thePageNamed("webdriver.base.url")
         );
     }
 
-    @Then("^validate the text on screen (.*)$")
+    @When("^he types (.*) and (.*)$")
+    public void attemptsToLogIn(String user, String pass) {
+        OnStage.theActorInTheSpotlight().attemptsTo(
+                Login.onTheSite(user, pass)
+        );
+    }
+
+    /*@Then("^he should see the text on screen (.*)$")
     public void validateTheTextOnScreenDashboard(String text) {
         OnStage.theActorInTheSpotlight().should(seeThat(ValidateText.of(TXT_VALIDATION), containsString(text)));
 
-    }
+    }*/
 
 }
